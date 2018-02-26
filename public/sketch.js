@@ -2,9 +2,6 @@
 var socket = io();
 // Keep track of users
 var users = {};
-// keep track of osc objects
-var osc = {};
-
 
 // The reason why I changed this part is because if we use a total random RGB,
 // then letter will be different colors in different users' screens.
@@ -13,6 +10,58 @@ var osc = {};
 // which means we can give a not-so-random color to each user based on their ID.
 // a references:
 // (https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript)
+
+const DEBUG = true;
+
+class Chopstick {
+  constructor(centerX, centerY) {
+    // constants
+    this.LENGTH = 1000;
+    this.WIDTH = 30;
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.angle = atan2(width / 2 - centerX, height / 2 - centerY);
+  }
+
+  getTip() {
+    return {
+      x: this.LENGTH / 2 * sin(this.angle) + this.centerX,
+      y: this.LENGTH / 2 * -cos(this.angle) + this.centerY
+    }
+  }
+
+  updateAngle(newAngle) {
+    this.angle += radians(newAngle);
+  }
+
+  updateCenter(mouseX, mouseY) {
+    this.centerX = mouseX;
+    this.centerY = mouseY;
+  }
+
+  display() {
+    push();
+
+    translate(this.centerX, this.centerY);
+
+    rotate(this.angle);
+    fill('cyan');
+    rectMode(CENTER);
+    rect(0, 0, this.WIDTH, this.LENGTH);
+
+    pop();
+
+    if (DEBUG) {
+      fill('magenta');
+      ellipse(this.centerX, this.centerY, 100, 100);
+
+      let tip = this.getTip();
+      fill('red');
+      ellipse(tip.x, tip.y, 20, 20);
+    }
+
+  }
+}
 
 function stringToColor(str) {
   let hash = 0;
@@ -35,6 +84,10 @@ function createNewUser(id) {
   }
 }
 
+let chopstick1;
+
+let DEBUG_COLOR;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   background(255);
@@ -48,8 +101,37 @@ function setup() {
   socket.on('disconnected', function(id){
     delete users[id];
   });
+
+  chopstick1 = new Chopstick(mouseX, mouseY);
+
+  let r = random(255);
+  let g = random(255);
+  let b = random(255);
+  DEBUG_COLOR = color(r, g, b);
 }
 
 function draw() {
   background(255);
+  if (DEBUG_COLOR) {
+    fill(DEBUG_COLOR);
+    rect(0, 0, 100, 100);
+  }
+  noStroke();
+  chopstick1.updateCenter(mouseX, mouseY);
+
+  fill("#c0ffee");
+
+  chopstick1.display();
+}
+
+function keyPressed() {
+  if (key === 'A') {
+    chopstick1.updateAngle(-1);
+  }
+
+  if (key === 'D') {
+    chopstick1.updateAngle(1);
+  }
+
+  return false;
 }
