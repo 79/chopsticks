@@ -13,11 +13,38 @@ var users = {};
 
 const DEBUG = true;
 
+class Sushi {
+  constructor() {
+    this.DIAMETER = 150;
+    this.centerX = width / 2;
+    this.centerY = height / 3 * 2;
+  }
+
+  display() {
+    push();
+
+    fill("orange");
+    ellipse(this.centerX, this.centerY, this.DIAMETER);
+
+    if (DEBUG) {
+      noFill();
+      stroke(DEBUG_COLOR);
+
+      // boundary for picking up
+      ellipse(this.centerX, this.centerY, this.DIAMETER + 20);
+
+      // boundary for squishing
+      ellipse(this.centerX, this.centerY, this.DIAMETER - 20);
+    }
+
+    pop();
+  }
+}
+
 class Chopstick {
   constructor(centerX, centerY) {
-    // constants
-    this.LENGTH = 1000;
     this.WIDTH = 30;
+    this.LENGTH = 1000;
     this.centerX = centerX;
     this.centerY = centerY;
     this.angle = atan2(width / 2 - centerX, height / 2 - centerY);
@@ -45,21 +72,20 @@ class Chopstick {
     translate(this.centerX, this.centerY);
 
     rotate(this.angle);
-    fill('cyan');
+    fill('brown');
     rectMode(CENTER);
     rect(0, 0, this.WIDTH, this.LENGTH);
 
     pop();
 
     if (DEBUG) {
-      fill('magenta');
+      fill(DEBUG_COLOR);
       ellipse(this.centerX, this.centerY, 100, 100);
 
       let tip = this.getTip();
-      fill('red');
+      fill(DEBUG_COLOR);
       ellipse(tip.x, tip.y, 20, 20);
     }
-
   }
 }
 
@@ -85,6 +111,7 @@ function createNewUser(id) {
 }
 
 let chopstick1;
+let sushi;
 
 let DEBUG_COLOR;
 
@@ -103,6 +130,7 @@ function setup() {
   });
 
   chopstick1 = new Chopstick(mouseX, mouseY);
+  sushi = new Sushi();
 
   let r = random(255);
   let g = random(255);
@@ -117,11 +145,11 @@ function draw() {
     rect(0, 0, 100, 100);
   }
   noStroke();
+
+  sushi.display();
   chopstick1.updateCenter(mouseX, mouseY);
-
-  fill("#c0ffee");
-
   chopstick1.display();
+
 }
 
 function keyPressed() {

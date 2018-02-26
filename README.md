@@ -7,7 +7,7 @@ ToDos
 -----
 
 - [x] Implement Chopstick class & mouse control
-- [ ] Implement Sushi class
+- [x] Implement Sushi class
 - [ ] Edge detection for sushi + one chopstick (add debug layers!)
 - [ ] Add second chopstick (control with arrow keys?)
 - [ ] Edge detection rules for both chopsticks
