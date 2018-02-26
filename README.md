@@ -3,7 +3,14 @@ CHOPSTICKS
 
 This is a project for collective play...
 
-ToDos
+PLAYING
+-------
+
+- `a` and `d` to rotate chopstick
+- mouse position controls center of chopstick
+
+
+TODOS
 -----
 
 - [x] Implement Chopstick class & mouse control
