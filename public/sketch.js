@@ -15,26 +15,58 @@ const DEBUG = true;
 
 class Sushi {
   constructor() {
-    this.DIAMETER = 150;
-    this.centerX = width / 2;
-    this.centerY = height / 3 * 2;
+    this.WIDTH = 100;
+    this.HEIGHT = 200;
+    this.cornerX = width / 2 - this.WIDTH / 2;
+    this.cornerY = height / 3 * 2 - this.HEIGHT / 2;
+  }
+
+  getLiftingBoundary() {
+    let tolerance = 10;
+
+    return [
+      this.cornerX - tolerance,
+      this.cornerY - tolerance,
+      this.WIDTH + 2 * tolerance,
+      this.HEIGHT + 2 * tolerance
+    ];
+  }
+
+  getSquishBoundary() {
+    let tolerance = 10;
+
+    return [
+      this.cornerX + tolerance,
+      this.cornerY + tolerance,
+      this.WIDTH - 2 * tolerance,
+      this.HEIGHT - 2 * tolerance
+    ];
   }
 
   display() {
     push();
 
     fill("orange");
-    ellipse(this.centerX, this.centerY, this.DIAMETER);
+    rect(this.cornerX, this.cornerY, this.WIDTH, this.HEIGHT);
 
     if (DEBUG) {
       noFill();
       stroke(DEBUG_COLOR);
+      rectMode(CORNER);
 
       // boundary for picking up
-      ellipse(this.centerX, this.centerY, this.DIAMETER + 20);
+      rect(...this.getLiftingBoundary());
 
       // boundary for squishing
-      ellipse(this.centerX, this.centerY, this.DIAMETER - 20);
+      rect(...this.getSquishBoundary());
+
+      if (chopstick1.isSquishing) {
+        fill('red');
+        rect(...this.getSquishBoundary());
+      } else if (chopstick1.isLifting) {
+        fill('lime');
+        rect(...this.getLiftingBoundary());
+      }
     }
 
     pop();
@@ -48,22 +80,30 @@ class Chopstick {
     this.centerX = centerX;
     this.centerY = centerY;
     this.angle = atan2(width / 2 - centerX, height / 2 - centerY);
+
+    this.isSquishing = false;
+    this.isLifting = false;
   }
 
-  getTip() {
-    return {
-      x: this.LENGTH / 2 * sin(this.angle) + this.centerX,
-      y: this.LENGTH / 2 * -cos(this.angle) + this.centerY
-    }
+  calculateTip() {
+    this.tipX = this.LENGTH / 2 * sin(this.angle) + this.centerX;
+    this.tipY = this.LENGTH / 2 * -cos(this.angle) + this.centerY;
   }
 
   updateAngle(newAngle) {
     this.angle += radians(newAngle);
+    this.calculateTip();
   }
 
   updateCenter(mouseX, mouseY) {
     this.centerX = mouseX;
     this.centerY = mouseY;
+    this.calculateTip();
+  }
+
+  checkCollisions() {
+    this.isSquishing = collidePointRect(this.tipX, this.tipY, ...sushi.getSquishBoundary());
+    this.isLifting = collidePointRect(this.tipX, this.tipY, ...sushi.getLiftingBoundary());
   }
 
   display() {
@@ -82,9 +122,8 @@ class Chopstick {
       fill(DEBUG_COLOR);
       ellipse(this.centerX, this.centerY, 100, 100);
 
-      let tip = this.getTip();
       fill(DEBUG_COLOR);
-      ellipse(tip.x, tip.y, 20, 20);
+      ellipse(this.tipX, this.tipY, 20, 20);
     }
   }
 }
@@ -116,6 +155,7 @@ let sushi;
 let DEBUG_COLOR;
 
 function setup() {
+  collideDebug(DEBUG);
   createCanvas(windowWidth, windowHeight);
   background(255);
 
@@ -148,6 +188,7 @@ function draw() {
 
   sushi.display();
   chopstick1.updateCenter(mouseX, mouseY);
+  chopstick1.checkCollisions();
   chopstick1.display();
 
 }
