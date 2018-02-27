@@ -63,13 +63,25 @@ class Sushi {
       // boundary for squishing
       rect(...this.getSquishBoundary());
 
-      // if (chopstick1.isSquishing) {
-      //   fill('red');
-      //   rect(...this.getSquishBoundary());
-      // } else if (chopstick1.isLifting) {
-      //   fill('lime');
-      //   rect(...this.getLiftingBoundary());
-      // }
+      let chopsticks = Object.values(users).map(function(user) {
+        return user.chopstick;
+      });
+
+      if (chopsticks.length < 2) {
+        return;
+      }
+
+      // NOTE: convenience because we know we only have two chopsticks
+      let chopstick1 = chopsticks[0];
+      let chopstick2 = chopsticks[1];
+
+      if (chopstick1.isSquishing && chopstick2.isSquishing) {
+        fill('red');
+        rect(...this.getSquishBoundary());
+      } else if (chopstick1.isLifting && chopstick2.isLifting) {
+        fill('lime');
+        rect(...this.getLiftingBoundary());
+      }
     }
 
     pop();

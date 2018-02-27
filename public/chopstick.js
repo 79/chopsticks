@@ -1,7 +1,7 @@
 class Chopstick {
   constructor(centerX, centerY) {
     this.WIDTH = 30;
-    this.LENGTH = 1000;
+    this.LENGTH = 500;
     this.centerX = centerX;
     this.centerY = centerY;
     this.angle = atan2(width / 2 - centerX, height / 2 - centerY);

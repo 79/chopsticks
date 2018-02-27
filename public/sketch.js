@@ -105,13 +105,13 @@ function draw() {
 function keyPressed() {
   if (key === 'A') {
     users[socket.id].chopstick.updateAngle(
-      users[socket.id].chopstick.angle - radians(1)
+      users[socket.id].chopstick.angle - radians(5)
     );
   }
 
   if (key === 'D') {
     users[socket.id].chopstick.updateAngle(
-      users[socket.id].chopstick.angle + radians(1)
+      users[socket.id].chopstick.angle + radians(5)
     );
   }
 
