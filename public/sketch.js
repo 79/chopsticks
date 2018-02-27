@@ -97,8 +97,10 @@ function draw() {
 
     user.chopstick.checkCollisions();
     user.chopstick.display();
+
   }
 
+  sushi.drag();
   sushi.display();
 }
 

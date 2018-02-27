@@ -45,6 +45,44 @@ class Sushi {
     }
   }
 
+  drag() {
+    let user_ids = Object.keys(users);
+
+    if (user_ids.length !== 2) {
+      return;
+    }
+
+    let myChopstick = users[socket.id].chopstick;
+
+    let index = user_ids.indexOf(socket.id);
+    if (index > -1) {
+      user_ids.splice(index, 1);
+    }
+    let other_id = user_ids[0];
+    let otherChopstick = users[other_id].chopstick;
+
+
+
+    if (myChopstick.isLifting && otherChopstick.isLifting) {
+      let d1 = dist(myChopstick.tipX, myChopstick.tipY, sushi.cornerX - sushi.WIDTH / 2, sushi.cornerY - sushi.HEIGHT / 2)
+      let d2 = dist(otherChopstick.tipX, otherChopstick.tipY, sushi.cornerX - sushi.WIDTH / 2, sushi.cornerY - sushi.HEIGHT / 2)
+      if (d1 > d2) {
+        let dx = myChopstick.tipX - sushi.cornerX;
+        sushi.cornerX = myChopstick.tipX + dx;
+        let dy = myChopstick.tipY - sushi.cornerY;
+        sushi.cornerY = myChopstick.tipY - dy;
+      } else {
+        let dx = otherChopstick.tipX - sushi.cornerX;
+        sushi.cornerX = otherChopstick.tipX + dx;
+        let dy = otherChopstick.tipY - sushi.cornerY;
+        sushi.cornerY = otherChopstick.tipY - dy;
+      }
+
+    }
+
+  }
+
+
   display(locationX, locationY) {
     push();
 
@@ -63,22 +101,25 @@ class Sushi {
       // boundary for squishing
       rect(...this.getSquishBoundary());
 
-      let chopsticks = Object.values(users).map(function(user) {
-        return user.chopstick;
-      });
+      let user_ids = Object.keys(users);
 
-      if (chopsticks.length < 2) {
+      if (user_ids.length !== 2) {
         return;
       }
 
-      // NOTE: convenience because we know we only have two chopsticks
-      let chopstick1 = chopsticks[0];
-      let chopstick2 = chopsticks[1];
+      let myChopstick = users[socket.id].chopstick;
 
-      if (chopstick1.isSquishing && chopstick2.isSquishing) {
+      let index = user_ids.indexOf(socket.id);
+      if (index > -1) {
+        user_ids.splice(index, 1);
+      }
+      let other_id = user_ids[0];
+      let otherChopstick = users[other_id].chopstick;
+
+      if (myChopstick.isSquishing && otherChopstick.isSquishing) {
         fill('red');
         rect(...this.getSquishBoundary());
-      } else if (chopstick1.isLifting && chopstick2.isLifting) {
+      } else if (myChopstick.isLifting && otherChopstick.isLifting) {
         fill('lime');
         rect(...this.getLiftingBoundary());
       }
