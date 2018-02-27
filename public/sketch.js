@@ -13,12 +13,18 @@ var users = {};
 // (https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript)
 
 
-let chopstick1;
 let sushi;
 let img;
+let socket_id;
 
 let DEBUG_COLOR;
 
+function createNewUser(id) {
+  users[id] = {
+    color: stringToColor(id),
+    chopstick: new Chopstick(mouseX, mouseY)
+  }
+}
 
 function preload() {
   img = loadImage("ImageSushi.png");
@@ -28,7 +34,6 @@ function setup() {
   collideDebug(DEBUG);
   createCanvas(windowWidth, windowHeight);
   background(255);
-
 
   // Listen for confirmation of connection
   socket.on('connect', function() {
@@ -40,7 +45,18 @@ function setup() {
     delete users[id];
   });
 
-  chopstick1 = new Chopstick(mouseX, mouseY);
+  socket.on('a_user_was_updated', function(userChanges) {
+    let id = userChanges.id;
+
+    if (!(id in users)) {
+      createNewUser(id);
+    }
+
+    let chopstick = users[id].chopstick;
+    chopstick.updateAngle(userChanges.angle);
+    chopstick.updateCenter(userChanges.centerX, userChanges.centerY);
+  });
+
   sushi = new Sushi();
 
   let r = random(255);
@@ -49,7 +65,25 @@ function setup() {
   DEBUG_COLOR = color(r, g, b);
 }
 
+let lastSentTime = 0;
+
 function draw() {
+  currentTime = millis();
+  if (currentTime - lastSentTime > 50) {
+    let angle = (users[socket.id]) ? users[socket.id].chopstick.angle : 0;
+    socket.emit('user_update', {
+      centerX: mouseX,
+      centerY: mouseY,
+      angle: angle
+    });
+
+    lastSentTime = currentTime;
+  }
+
+  if (!socket.id) {
+    return;
+  }
+
   background(255);
 
   if (DEBUG_COLOR) {
@@ -58,39 +92,28 @@ function draw() {
   }
   noStroke();
 
-  sushi.display();
-  //sushi.gravity(0.3);
-  chopstick1.updateCenter(mouseX, mouseY);
-  chopstick1.checkCollisions();
-  chopstick1.display();
+  for (key in users) {
+    let user = users[key];
 
-  if (chopstick1.isLifting) {
-    sushi.cornerY = chopstick1.tipY
-    sushi.cornerX = chopstick1.tipX
-    //console.log(sushi.tipX + sushi.tipY);
+    user.chopstick.checkCollisions();
+    user.chopstick.display();
   }
 
+  sushi.display();
 }
-
-
-
 
 function keyPressed() {
   if (key === 'A') {
-    chopstick1.updateAngle(-1);
+    users[socket.id].chopstick.updateAngle(
+      users[socket.id].chopstick.angle - radians(1)
+    );
   }
 
   if (key === 'D') {
-    chopstick1.updateAngle(1);
+    users[socket.id].chopstick.updateAngle(
+      users[socket.id].chopstick.angle + radians(1)
+    );
   }
 
   return false;
-}
-
-
-function createNewUser(id) {
-  users[id] = {
-    username: id,
-    color: stringToColor(id)
-  }
 }

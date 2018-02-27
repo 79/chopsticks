@@ -10,8 +10,6 @@ class Chopstick {
     this.isLifting = false;
     this.tipX = 0;
     this.tipY = 0;
-
-
   }
 
   calculateTip() {
@@ -20,7 +18,7 @@ class Chopstick {
   }
 
   updateAngle(newAngle) {
-    this.angle += radians(newAngle);
+    this.angle = newAngle;
     this.calculateTip();
   }
 

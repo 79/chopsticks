@@ -45,9 +45,6 @@ class Sushi {
     }
   }
 
-
-
-
   display(locationX, locationY) {
     push();
 
@@ -66,13 +63,13 @@ class Sushi {
       // boundary for squishing
       rect(...this.getSquishBoundary());
 
-      if (chopstick1.isSquishing) {
-        fill('red');
-        rect(...this.getSquishBoundary());
-      } else if (chopstick1.isLifting) {
-        fill('lime');
-        rect(...this.getLiftingBoundary());
-      }
+      // if (chopstick1.isSquishing) {
+      //   fill('red');
+      //   rect(...this.getSquishBoundary());
+      // } else if (chopstick1.isLifting) {
+      //   fill('lime');
+      //   rect(...this.getLiftingBoundary());
+      // }
     }
 
     pop();
