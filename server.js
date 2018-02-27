@@ -2,7 +2,7 @@
 let port = process.env.PORT || 8000;
 let express = require('express');
 let app = express();
-let server = require('http').createServer(app).listen(port, function () {
+let server = require('http').createServer(app).listen(port, function() {
   console.log('Server listening at port: ', port);
 });
 
@@ -16,7 +16,7 @@ let io = require('socket.io').listen(server);
 io.sockets.on('connection',
   // Callback function on connection
   // Comes back with a socket object
-  function (socket) {
+  function(socket) {
 
     console.log("We have a new client: " + socket.id);
 
@@ -24,6 +24,17 @@ io.sockets.on('connection',
     // Tell everyone client has disconnected
     socket.on('disconnect', function() {
       io.sockets.emit('disconnected', socket.id);
+    });
+
+    socket.on('user_update', function(userChanges) {
+      let payload = {
+        id: socket.id,
+        centerX: userChanges.centerX,
+        centerY: userChanges.centerY,
+        angle: userChanges.angle
+      }
+
+      io.sockets.emit('a_user_was_updated', payload);
     });
   }
 );

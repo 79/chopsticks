@@ -4,8 +4,8 @@ class Sushi {
   constructor() {
     this.WIDTH = 100;
     this.HEIGHT = 200;
-    this.cornerX = width / 2 - this.WIDTH / 2;
-    this.cornerY = height / 3 * 2 - this.HEIGHT / 2;
+    this.cornerX = 1000 / 2 - this.WIDTH / 2;
+    this.cornerY = 600 / 3 * 2 - this.HEIGHT / 2;
     this.speed = 0;
   }
 
