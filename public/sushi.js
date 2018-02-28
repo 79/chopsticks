@@ -1,4 +1,5 @@
 const DEBUG = true;
+var on = false;
 
 class Sushi {
   constructor() {
@@ -46,42 +47,48 @@ class Sushi {
   }
 
   drag() {
-    let user_ids = Object.keys(users);
+    let user_ids = Object.keys(users).sort();
 
     if (user_ids.length !== 2) {
       return;
     }
 
-    let myChopstick = users[socket.id].chopstick;
+    // NOTE: Assign chopstick1 based on sorted array of socket ids
+    // THIS IS IMPORTANT, so that they're the same chopstick on any client
+    let chopstick1 = users[user_ids[0]].chopstick;
+    let chopstick2 = users[user_ids[1]].chopstick;
 
-    let index = user_ids.indexOf(socket.id);
-    if (index > -1) {
-      user_ids.splice(index, 1);
+    if (chopstick1.isSquishing || chopstick2.isSquishing) {
+      return;
     }
-    let other_id = user_ids[0];
-    let otherChopstick = users[other_id].chopstick;
 
+    let sushiCenterX = sushi.cornerX + sushi.WIDTH / 2;
+    let sushiCenterY = sushi.cornerY + sushi.HEIGHT / 2;
 
+    if (chopstick1.isLifting && chopstick2.isLifting) {
+      let distance1 = dist(chopstick1.tipX, chopstick1.tipY, sushiCenterX, sushiCenterY);
+      let distance2 = dist(chopstick2.tipX, chopstick2.tipY, sushiCenterX, sushiCenterY);
 
-    if (myChopstick.isLifting && otherChopstick.isLifting) {
-      let d1 = dist(myChopstick.tipX, myChopstick.tipY, sushi.cornerX - sushi.WIDTH / 2, sushi.cornerY - sushi.HEIGHT / 2)
-      let d2 = dist(otherChopstick.tipX, otherChopstick.tipY, sushi.cornerX - sushi.WIDTH / 2, sushi.cornerY - sushi.HEIGHT / 2)
-      if (d1 > d2) {
-        let dx = myChopstick.tipX - sushi.cornerX;
-        sushi.cornerX = myChopstick.tipX + dx;
-        let dy = myChopstick.tipY - sushi.cornerY;
-        sushi.cornerY = myChopstick.tipY - dy;
+      if (distance1 > distance2) {
+        console.log("chopstick1 greater");
+        // i.e. if chopstick1 is further than chopstick2
+        let dx = chopstick1.tipX - sushi.cornerX;
+        let xMove = (dx > sushi.WIDTH / 2) ? 1 : -1;
+        sushi.cornerX = chopstick1.tipX - dx + xMove;
+        let dy = chopstick1.tipY - sushi.cornerY;
+        let yMove = (dy > sushi.HEIGHT / 2) ? 1 : -1;
+        sushi.cornerY = chopstick1.tipY - dy + yMove;
       } else {
-        let dx = otherChopstick.tipX - sushi.cornerX;
-        sushi.cornerX = otherChopstick.tipX + dx;
-        let dy = otherChopstick.tipY - sushi.cornerY;
-        sushi.cornerY = otherChopstick.tipY - dy;
+        console.log("chopstick2 greater 222");
+        let dx = chopstick2.tipX - sushi.cornerX;
+        let xMove = (dx > sushi.WIDTH / 2) ? 1 : -1;
+        sushi.cornerX = chopstick2.tipX - dx + xMove;
+        let dy = chopstick2.tipY - sushi.cornerY;
+        let yMove = (dy > sushi.HEIGHT / 2) ? 1 : -1;
+        sushi.cornerY = chopstick2.tipY - dy + yMove;
       }
-
     }
-
   }
-
 
   display(locationX, locationY) {
     push();
@@ -101,25 +108,21 @@ class Sushi {
       // boundary for squishing
       rect(...this.getSquishBoundary());
 
-      let user_ids = Object.keys(users);
+      let user_ids = Object.keys(users).sort();
 
       if (user_ids.length !== 2) {
         return;
       }
 
-      let myChopstick = users[socket.id].chopstick;
+      // NOTE: Assign chopstick1 based on sorted array of socket ids
+      // THIS IS IMPORTANT, so that they're the same chopstick on any client
+      let chopstick1 = users[user_ids[0]].chopstick;
+      let chopstick2 = users[user_ids[1]].chopstick;
 
-      let index = user_ids.indexOf(socket.id);
-      if (index > -1) {
-        user_ids.splice(index, 1);
-      }
-      let other_id = user_ids[0];
-      let otherChopstick = users[other_id].chopstick;
-
-      if (myChopstick.isSquishing && otherChopstick.isSquishing) {
+      if (chopstick1.isSquishing && chopstick2.isSquishing) {
         fill('red');
         rect(...this.getSquishBoundary());
-      } else if (myChopstick.isLifting && otherChopstick.isLifting) {
+      } else if (chopstick1.isLifting && chopstick2.isLifting) {
         fill('lime');
         rect(...this.getLiftingBoundary());
       }
