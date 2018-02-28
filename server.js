@@ -1,4 +1,4 @@
-// Create server
+  // Create server
 let port = process.env.PORT || 8000;
 let express = require('express');
 let app = express();
@@ -39,12 +39,12 @@ io.sockets.on('connection',
     });
 
     socket.on('sushi_update', function(sushiChanges) {
-      let sushiInformation = {
-        sushiX: sushiChanges.sushiX,
-        sushiY: sushiChanges.sushiY
+      let payload = {
+        cornerX: sushiChanges.cornerX,
+        cornerY: sushiChanges.cornerY
       }
 
-      io.sockets.emit('changes_made_to_sushi_location', sushiInformation)
+      io.sockets.emit('changes_made_to_sushi_location', payload)
     });
   }
 );

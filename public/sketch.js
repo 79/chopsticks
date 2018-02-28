@@ -64,10 +64,8 @@ function setup() {
     chopstick.updateCenter(userChanges.centerX, userChanges.centerY);
   });
 
-  socket.on('changes_made_to_sushi_location', function(targetChanges) {
-    let sushiX = targetChanges.sushiX;
-    let sushiY = targetChanges.sushiY;
-
+  socket.on('changes_made_to_sushi_location', function(sushiChanges) {
+    sushiChanges.updateCorner(sushiChanges.cornerX, sushiChanges.cornerY);
   });
 
   sushiArray.push(new Sushi());
@@ -93,8 +91,8 @@ function draw() {
 
     if (sushi) {
       socket.emit('sushi_update', {
-        sushiX: sushi.cornerX,
-        sushiY: sushi.cornerY
+        cornerX: sushi.cornerX,
+        cornerY: sushi.cornerY
       });
     }
 
@@ -106,8 +104,8 @@ function draw() {
   }
 
   background('lightgoldenrodyellow');
-  ellipse(500, 750, 500, 100);
-  ellipse(500, 750, 250, 50);
+  ellipse(500, 550, 500, 100);
+  ellipse(500, 550, 250, 50);
   text(scoreText + score, width / 2, 100);
   mouth.display();
 
@@ -128,7 +126,8 @@ function draw() {
   sushi.display();
   sushi.drag();
   mouth.collision(sushi);
-  sushi.gravity(0.01);
+
+  sushi.gravity(0.3);
 
 }
 

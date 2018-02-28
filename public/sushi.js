@@ -11,7 +11,7 @@ class Sushi {
   }
 
   getLiftingBoundary() {
-    let tolerance = 3;
+    let tolerance = 5;
 
     return [
       this.cornerX - tolerance,
@@ -33,20 +33,36 @@ class Sushi {
   }
 
   gravity(n) {
+    let user_ids = Object.keys(users).sort();
+
+    if (user_ids.length !== 2) {
+      return;
+    }
+
+    // NOTE: Assign chopstick1 based on sorted array of socket ids
+    // THIS IS IMPORTANT, so that they're the same chopstick on any client
+    let chopstick1 = users[user_ids[0]].chopstick;
+    let chopstick2 = users[user_ids[1]].chopstick;
+
+
     let gravity = n;
 
     this.speed = this.speed + gravity;
+    if (chopstick1.isLifting && chopstick2.isLifting) {
+      this.speed = 0;
+    }
+
     this.cornerY = this.cornerY + this.speed;
 
-    if (this.cornerY > 750 - this.HEIGHT) {
-      this.speed = this.speed * -0.85;
-      this.cornerY = 750 - this.HEIGHT;
+    if (this.cornerY > 550 - this.HEIGHT) {
+      this.speed = this.speed * -0.65;
+      this.cornerY = 550 - this.HEIGHT;
     }
   }
 
-  update(sushiX, sushiY) {
-    this.cornerX = sushiX;
-    this.cornerY = sushiY;
+  updateCorner(cornerX, cornerY) {
+    this.cornerX = cornerX;
+    this.cornerY = cornerY;
   }
 
   drag() {
@@ -93,24 +109,20 @@ class Sushi {
     }
   }
 
-  display(locationX, locationY) {
+  display() {
     push();
 
-    locationX = locationX || this.cornerX;
-    locationY = locationY || this.cornerY;
-    image(img, locationX, locationY, this.WIDTH, this.HEIGHT);
+    image(img, this.cornerX, this.cornerY, this.WIDTH, this.HEIGHT);
 
     // if (DEBUG) {
     //   noFill();
     //   stroke(DEBUG_COLOR);
     //   rectMode(CORNER);
     //
-    //   boundary
-    //   for picking up
+    //   // boundary for picking up
     //   rect(...this.getLiftingBoundary());
     //
-    //   boundary
-    //   for squishing
+    //   // boundary for squishing
     //   rect(...this.getSquishBoundary());
     //
     //   let user_ids = Object.keys(users).sort();
