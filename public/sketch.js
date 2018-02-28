@@ -38,8 +38,9 @@ function preload() {
 
 function setup() {
   collideDebug(DEBUG);
+  // NOTE: because our game wants to be pixel-perfect,
+  // we set max canvas but try to keep everything within 1000x1000
   createCanvas(windowWidth, windowHeight);
-  background(255);
 
   // Listen for confirmation of connection
   socket.on('connect', function() {
@@ -104,7 +105,9 @@ function draw() {
     return;
   }
 
-  background(255);
+  background('lightgoldenrodyellow');
+  ellipse(500, 750, 500, 100);
+  ellipse(500, 750, 250, 50);
   text(scoreText + score, width / 2, 100);
   mouth.display();
 
@@ -119,9 +122,7 @@ function draw() {
 
     user.chopstick.checkCollisions();
     user.chopstick.display();
-
   }
-
 
   sushi = sushiArray[sushiArray.length - 1];
   sushi.display();

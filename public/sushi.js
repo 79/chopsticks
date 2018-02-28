@@ -6,9 +6,8 @@ class Sushi {
     this.WIDTH = 100;
     this.HEIGHT = 100;
     this.cornerX = 1000 / 2 - this.WIDTH / 2;
-    this.cornerY = 600 / 3 * 2 - this.HEIGHT / 2;
+    this.cornerY = 1000 / 3 * 2 - this.HEIGHT / 2;
     this.speed = 0;
-
   }
 
   getLiftingBoundary() {
@@ -39,18 +38,15 @@ class Sushi {
     this.speed = this.speed + gravity;
     this.cornerY = this.cornerY + this.speed;
 
-    if (this.cornerY > 1200 - 100 - this.HEIGHT) {
+    if (this.cornerY > 750 - this.HEIGHT) {
       this.speed = this.speed * -0.85;
-    }
-    if (this.cornerY > 1200 - 100 - this.HEIGHT) {
-      this.cornerY = 1200 - 100 - this.HEIGHT;
+      this.cornerY = 750 - this.HEIGHT;
     }
   }
 
   update(sushiX, sushiY) {
     this.cornerX = sushiX;
     this.cornerY = sushiY;
-
   }
 
   drag() {
