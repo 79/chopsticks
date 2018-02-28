@@ -32,9 +32,19 @@ io.sockets.on('connection',
         centerX: userChanges.centerX,
         centerY: userChanges.centerY,
         angle: userChanges.angle
+
       }
 
       io.sockets.emit('a_user_was_updated', payload);
+    });
+
+    socket.on('sushi_update', function(sushiChanges) {
+      let sushiInformation = {
+        sushiX: sushiChanges.sushiX,
+        sushiY: sushiChanges.sushiY
+      }
+
+      io.sockets.emit('changes_made_to_sushi_location', sushiInformation)
     });
   }
 );

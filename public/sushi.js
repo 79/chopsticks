@@ -47,6 +47,12 @@ class Sushi {
     }
   }
 
+  update(sushiX, sushiY) {
+    this.cornerX = sushiX;
+    this.cornerY = sushiY;
+
+  }
+
   drag() {
     let user_ids = Object.keys(users).sort();
 
@@ -98,36 +104,38 @@ class Sushi {
     locationY = locationY || this.cornerY;
     image(img, locationX, locationY, this.WIDTH, this.HEIGHT);
 
-    if (DEBUG) {
-      noFill();
-      stroke(DEBUG_COLOR);
-      rectMode(CORNER);
-
-      // boundary for picking up
-      rect(...this.getLiftingBoundary());
-
-      // boundary for squishing
-      rect(...this.getSquishBoundary());
-
-      let user_ids = Object.keys(users).sort();
-
-      if (user_ids.length !== 2) {
-        return;
-      }
-
-      // NOTE: Assign chopstick1 based on sorted array of socket ids
-      // THIS IS IMPORTANT, so that they're the same chopstick on any client
-      let chopstick1 = users[user_ids[0]].chopstick;
-      let chopstick2 = users[user_ids[1]].chopstick;
-
-      if (chopstick1.isSquishing && chopstick2.isSquishing) {
-        fill('red');
-        rect(...this.getSquishBoundary());
-      } else if (chopstick1.isLifting && chopstick2.isLifting) {
-        fill('lime');
-        rect(...this.getLiftingBoundary());
-      }
-    }
+    // if (DEBUG) {
+    //   noFill();
+    //   stroke(DEBUG_COLOR);
+    //   rectMode(CORNER);
+    //
+    //   boundary
+    //   for picking up
+    //   rect(...this.getLiftingBoundary());
+    //
+    //   boundary
+    //   for squishing
+    //   rect(...this.getSquishBoundary());
+    //
+    //   let user_ids = Object.keys(users).sort();
+    //
+    //   if (user_ids.length !== 2) {
+    //     return;
+    //   }
+    //
+    //   // NOTE: Assign chopstick1 based on sorted array of socket ids
+    //   // THIS IS IMPORTANT, so that they're the same chopstick on any client
+    //   let chopstick1 = users[user_ids[0]].chopstick;
+    //   let chopstick2 = users[user_ids[1]].chopstick;
+    //
+    //   if (chopstick1.isSquishing && chopstick2.isSquishing) {
+    //     fill('red');
+    //     rect(...this.getSquishBoundary());
+    //   } else if (chopstick1.isLifting && chopstick2.isLifting) {
+    //     fill('lime');
+    //     rect(...this.getLiftingBoundary());
+    //   }
+    // }
 
     pop();
   }

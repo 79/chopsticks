@@ -39,15 +39,18 @@ class Chopstick {
     translate(this.centerX, this.centerY);
 
     rotate(this.angle);
-    fill('brown');
+    fill('#DEB887');
     rectMode(CENTER);
+
     rect(0, 0, this.WIDTH, this.LENGTH);
+
+
 
     pop();
 
     if (DEBUG) {
-      fill(DEBUG_COLOR);
-      ellipse(this.centerX, this.centerY, 100, 100);
+      //  fill(DEBUG_COLOR);
+      //  ellipse(this.centerX, this.centerY, 100, 100);
 
       fill(DEBUG_COLOR);
       ellipse(this.tipX, this.tipY, 20, 20);

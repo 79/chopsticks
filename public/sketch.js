@@ -63,6 +63,12 @@ function setup() {
     chopstick.updateCenter(userChanges.centerX, userChanges.centerY);
   });
 
+  socket.on('changes_made_to_sushi_location', function(targetChanges) {
+    let sushiX = targetChanges.sushiX;
+    let sushiY = targetChanges.sushiY;
+
+  });
+
   sushiArray.push(new Sushi());
   mouth = new Mouth(300, 100);
 
@@ -84,6 +90,13 @@ function draw() {
       angle: angle
     });
 
+    if (sushi) {
+      socket.emit('sushi_update', {
+        sushiX: sushi.cornerX,
+        sushiY: sushi.cornerY
+      });
+    }
+
     lastSentTime = currentTime;
   }
 
@@ -95,11 +108,11 @@ function draw() {
   text(scoreText + score, width / 2, 100);
   mouth.display();
 
-  if (DEBUG_COLOR) {
-    fill(DEBUG_COLOR);
-    rect(0, 0, 100, 100);
-  }
-  noStroke();
+  // if (DEBUG_COLOR) {
+  //   fill(DEBUG_COLOR);
+  //   rect(0, 0, 100, 100);
+  // }
+  // noStroke();
 
   for (key in users) {
     let user = users[key];
