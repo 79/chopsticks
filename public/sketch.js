@@ -4,6 +4,7 @@ var socket = io();
 var users = {};
 
 
+
 // The reason why I changed this part is because if we use a total random RGB,
 // then letter will be different colors in different users' screens.
 // so I tried to find a logic that to make the random color not so random:)
@@ -15,7 +16,11 @@ var users = {};
 
 let sushi;
 let img;
+let img2;
 let socket_id;
+let sushiArray = [];
+let scoreText = "PIECES OF SUSHI EATEN: ";
+let score = 0;
 
 let DEBUG_COLOR;
 
@@ -28,6 +33,7 @@ function createNewUser(id) {
 
 function preload() {
   img = loadImage("ImageSushi.png");
+  img2 = loadImage("mouth.png");
 }
 
 function setup() {
@@ -57,7 +63,8 @@ function setup() {
     chopstick.updateCenter(userChanges.centerX, userChanges.centerY);
   });
 
-  sushi = new Sushi();
+  sushiArray.push(new Sushi());
+  mouth = new Mouth(300, 100);
 
   let r = random(255);
   let g = random(255);
@@ -85,6 +92,8 @@ function draw() {
   }
 
   background(255);
+  text(scoreText + score, width / 2, 100);
+  mouth.display();
 
   if (DEBUG_COLOR) {
     fill(DEBUG_COLOR);
@@ -100,8 +109,13 @@ function draw() {
 
   }
 
-  sushi.drag();
+
+  sushi = sushiArray[sushiArray.length - 1];
   sushi.display();
+  sushi.drag();
+  mouth.collision(sushi);
+  sushi.gravity(0.01);
+
 }
 
 function keyPressed() {

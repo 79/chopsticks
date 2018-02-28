@@ -1,17 +1,18 @@
 const DEBUG = true;
-var on = false;
+
 
 class Sushi {
   constructor() {
     this.WIDTH = 100;
-    this.HEIGHT = 200;
+    this.HEIGHT = 100;
     this.cornerX = 1000 / 2 - this.WIDTH / 2;
     this.cornerY = 600 / 3 * 2 - this.HEIGHT / 2;
     this.speed = 0;
+
   }
 
   getLiftingBoundary() {
-    let tolerance = 10;
+    let tolerance = 3;
 
     return [
       this.cornerX - tolerance,
@@ -38,11 +39,11 @@ class Sushi {
     this.speed = this.speed + gravity;
     this.cornerY = this.cornerY + this.speed;
 
-    if (this.cornerY > height - 100 - this.HEIGHT) {
+    if (this.cornerY > 1200 - 100 - this.HEIGHT) {
       this.speed = this.speed * -0.85;
     }
-    if (this.cornerY > height - 100 - this.HEIGHT) {
-      this.cornerY = height - 100 - this.HEIGHT;
+    if (this.cornerY > 1200 - 100 - this.HEIGHT) {
+      this.cornerY = 1200 - 100 - this.HEIGHT;
     }
   }
 
